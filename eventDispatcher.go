@@ -2,13 +2,13 @@ package main
 
 import (
 	"github.com/gofiber/websocket/v2"
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promauto"
 )
 
 var (
 	activeUsers = make(map[string]**websocket.Conn)
 )
-
-
 
 func createEvent(eventType string, error bool, data interface{}) map[string]interface{} {
 	message := make(map[string]interface{})
@@ -19,6 +19,14 @@ func createEvent(eventType string, error bool, data interface{}) map[string]inte
 }
 
 func runEventDispatcher() {
+	// Stats
+	activeUsersCounter := promauto.NewCounterFunc(prometheus.CounterOpts{Name: "api_totalusers"}, func() float64 {
+		return float64(len(activeUsers))
+	})
+	_ = prometheus.Register(activeUsersCounter)
+
+
+	// Routes
 	app.Get("/api/feed", websocket.New(func(conn *websocket.Conn) {
 		userId := getUserId(conn.Cookies(accessTokenCookieName, ""))
 		if userId == "" {
