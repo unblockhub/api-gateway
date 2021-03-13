@@ -1,6 +1,8 @@
 package main
 
 import (
+	"fmt"
+	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/websocket/v2"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promauto"
@@ -54,4 +56,7 @@ func runEventDispatcher() {
 			delete(activeUsers, userId)
 		}
 	}))
+	app.Get("/api/totalUsers", func(ctx *fiber.Ctx) error {
+		return ctx.SendString(fmt.Sprintf("%d", len(activeUsers)))
+	})
 }
