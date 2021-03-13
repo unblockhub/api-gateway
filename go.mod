@@ -4,5 +4,7 @@ go 1.16
 
 require (
 	github.com/ansrivas/fiberprometheus/v2 v2.1.1
+	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/gofiber/fiber/v2 v2.5.0
+	github.com/gofiber/websocket/v2 v2.0.2
 )
