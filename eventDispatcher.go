@@ -27,7 +27,6 @@ func runEventDispatcher() {
 	})
 	_ = prometheus.Register(activeUsersCounter)
 
-
 	// Routes
 	app.Get("/api/feed", websocket.New(func(conn *websocket.Conn) {
 		userId := getUserId(conn.Cookies(accessTokenCookieName, ""))
@@ -56,6 +55,7 @@ func runEventDispatcher() {
 			delete(activeUsers, userId)
 		}
 	}))
+	
 	app.Get("/api/totalUsers", func(ctx *fiber.Ctx) error {
 		return ctx.SendString(fmt.Sprintf("%d", len(activeUsers)))
 	})
