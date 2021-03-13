@@ -23,8 +23,8 @@ func runEventDispatcher() {
 		userId := getUserId(conn.Cookies(accessTokenCookieName, ""))
 		if userId == "" {
 			_ = conn.WriteJSON(createEvent("DISCONNECT", true, "Invalid authentication."))
-			//_ = conn.Close()
-			//return
+			_ = conn.Close()
+			return
 		}
 		existing, exists := activeUsers[userId]
 		if exists {
