@@ -1,0 +1,30 @@
+swagger: "2.0"
+info:
+  description: "API for UnblockHub. Please note that *most* routes require a cookie named 'fuckyouwhoeverislurkingatthis' for login."
+  version: "1.0.0"
+  title: "UnblockHub API"
+  contact:
+    url: "https://discord.gg/QTX36dDMzT"
+host: "ubh.vote.rip"
+basePath: "/api"
+tags:
+  - name: "Chat"
+    description: "Various routes to do with chatting in private or public channels"
+schemes:
+  - "https"
+paths:
+  /feed:
+    get:
+      tags:
+        - "Chat"
+      summary: "Subscribe to the chat feed"
+      description: "This will allow you to receive events such as chat and party invite. \nOnly one client with the same user-id might connect at the same time. If more gets connected the last one gets disconnected"
+      operationId: "subscribeFeed"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      responses:
+        "200":
+          description: "WebSocket created"
+
