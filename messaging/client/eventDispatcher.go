@@ -7,7 +7,6 @@ import (
 	"github.com/gofiber/websocket/v2"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promauto"
-	"github.com/unblockhub/api-gateway/auth"
 	"github.com/unblockhub/api-gateway/cache"
 	"github.com/unblockhub/api-gateway/messaging/node"
 	"log"
@@ -56,13 +55,7 @@ func RunEventDispatcher(app *fiber.App) {
 
 	// Routes
 	app.Get("/feed", websocket.New(func(conn *websocket.Conn) {
-		userId := auth.GetUserId(conn.Cookies(auth.AccessTokenCookieName, ""))
-		if userId == "" {
-			_ = conn.WriteJSON(createEvent("DISCONNECT", true, "Invalid authentication."))
-			_ = conn.Close()
-			return
-		}
-
+		userId := conn.Locals("user-id").(string)
 		// Duplicate connection protection
 		currentNodeName := cache.RedisClient.Get(cache.Ctx, fmt.Sprintf("gateway:clients:%s", userId)).Val()
 		if currentNodeName != nodeName {

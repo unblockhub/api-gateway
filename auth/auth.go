@@ -46,17 +46,14 @@ func GetUserId(token string) string {
 }
 
 func RequireLogin(request *fiber.Ctx) string {
-	token := request.Cookies(AccessTokenCookieName, "")
+	token := request.Get(AccessTokenCookieName, "")
 	userId := GetUserId(token)
 	if userId == "" {
 		token, err := createJWTToken()
 		if err == false {
 			panic(nil)
 		}
-		request.Cookie(&fiber.Cookie{
-			Name:  AccessTokenCookieName,
-			Value: token,
-		})
+		request.Set(AccessTokenCookieName, token)
 		userId = GetUserId(token)
 	}
 	return userId

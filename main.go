@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/ansrivas/fiberprometheus/v2"
 	"github.com/gofiber/fiber/v2"
+	"github.com/unblockhub/api-gateway/auth"
 	"github.com/unblockhub/api-gateway/cache"
 	"github.com/unblockhub/api-gateway/messaging/client"
 	"github.com/unblockhub/api-gateway/messaging/node"
@@ -26,6 +27,11 @@ func main() {
 	prometheus := fiberprometheus.New("api-gateway")
 	prometheus.RegisterAt(app, "/metrics")
 	app.Use(prometheus.Middleware)
+	app.Use(func(c *fiber.Ctx) error {
+		userId := auth.RequireLogin(c)
+		c.Locals("user-id", userId)
+		return c.Next()
+	})
 
 	app.Get("/healthz", func(c *fiber.Ctx) error {
 		return c.SendString("OK")
